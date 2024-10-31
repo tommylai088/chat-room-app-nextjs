@@ -33,7 +33,7 @@ function UserSearchInput({ callback, searchValue, resetValue }: IUserSearchInput
                         isRound={true}
                         fontSize="18px"
                         marginLeft="-30px"
-                        colorScheme="blue"
+                        colorScheme="orange"
                         aria-label="Clear search value"
                         icon={<IoCloseOutline />}
                     />

@@ -30,26 +30,27 @@ const useChatHandlers = ({
         }
     }, [selectedUserId, messages, mutate])
 
-    // Updates the user chats list with the latest message
-    const handleUpdateUserChats = useCallback(async (message: IMessage) => {
-        let newList: IUserChat[];
-        if (!userChats.find(item => item.latestMessage.roomId == message.roomId)) {
-            newList = [...userChats, {
-                latestMessage: { ...message },
-                unreadCount: 1
-            }];
-        } else {
-            newList = userChats.map((item: IUserChat) =>
-                item?.latestMessage?.roomId == message.roomId
-                    ? {
-                        ...item,
-                        latestMessage: { ...message }
-                    }
-                    : item
-            )
-        }
-        await userChatsMutate(newList, false);
-    }, [userChats, userChatsMutate])
+    // Updates the user chats list with the latest message and unread counts
+    const handleUpdateUserChats = useCallback(
+        async (receiverId: string, senderId: string, message: IMessage, unreadCount: number, shouldMarkAsRead: boolean) => {
+            const chatExists = userChats.some(item => item.latestMessage.roomId === message.roomId);
+
+            // If chat does not exist, add a new entry to the chat list
+            let newList = chatExists
+                ? userChats.map((item: IUserChat) =>
+                    item.latestMessage.roomId === message.roomId
+                        ? { latestMessage: { ...message }, unreadCount }
+                        : item
+                )
+                : [...userChats, { latestMessage: { ...message }, unreadCount: 1 }];
+
+            await userChatsMutate(newList, false);
+
+            // Mark the message as read if required
+            if (shouldMarkAsRead) handleMarkAsRead(senderId, receiverId);
+        },
+        [userChats, userChatsMutate]
+    );
 
     // Marks a message as read
     const handleMarkAsRead = useCallback((senderId: string, receiverId: string) => {
@@ -59,21 +60,23 @@ const useChatHandlers = ({
         });
     }, []);
 
-    const handleUpdateUnreadCount = useCallback((receiverId: string, senderId: string, message: IMessage) => {
-        // When I receive anybody messages
-        if (receiverId === currentUserId) {
-            // if selcted user sent message to me, initialize the count to 0
+    // Determines the unread count and whether a message should be marked as read
+    const calculateUnreadCount = useCallback(
+        (receiverId: string, senderId: string, roomId: string) => {
             let unreadCount = 0;
-            if (selectedUserId != senderId) {
-                // Increment the unread count for the receiver
-                unreadCount = (unreadCounts[message.roomId] || 0) + 1;
-                dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId: message.roomId, unreadCount } });
-            } else {
-                handleMarkAsRead(senderId, receiverId);
-                dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId: message.roomId, unreadCount: 0 } });
+            let shouldMarkAsRead = false;
+
+            if (receiverId === currentUserId) {
+                if (selectedUserId !== senderId) {
+                    unreadCount = (unreadCounts[roomId] || 0) + 1;
+                } else {
+                    shouldMarkAsRead = true;
+                }
             }
-        }
-    }, [currentUserId, selectedUserId, handleMarkAsRead, dispatch, unreadCounts])
+            return { unreadCount, shouldMarkAsRead };
+        },
+        [currentUserId, selectedUserId, unreadCounts]
+    );
 
     const handleIncomingMessage = useCallback(async (message: IMessage) => {
         console.log('Received message:', message);
@@ -82,11 +85,12 @@ const useChatHandlers = ({
 
         // Update existing messages
         await handleUpdateMessages(receiverId, senderId, message)
-        // // Update existing user chats
-        await handleUpdateUserChats(message)
         // Update unread counts
-        handleUpdateUnreadCount(receiverId, senderId, message);
-    }, [handleUpdateUnreadCount]);
+        const { unreadCount, shouldMarkAsRead } = calculateUnreadCount(receiverId, senderId, message.roomId);
+        // // Update existing user chats
+        await handleUpdateUserChats(receiverId, senderId, message, unreadCount, shouldMarkAsRead)
+        // handleUpdateUnreadCount(receiverId, senderId, message);
+    }, [handleUpdateMessages, handleUpdateUserChats]);
 
     const handleRoomNotification = useCallback(async (message: IMessage) => {
         console.log(`New notification from ${message.receiver} in room ${message.roomId}: ${message.message}`);
@@ -103,13 +107,20 @@ const useChatHandlers = ({
         });
     }, [dispatch]);
 
-    const handleUnreadCountUpdated = useCallback(({ roomId, unreadCount }: IMarkMessageAsReadRes) => {
+    const handleUnreadCountUpdated = useCallback(async ({ roomId, unreadCount }: IMarkMessageAsReadRes) => {
         console.log('Unread count has updated:', {
             roomId,
             unreadCount
         });
-        dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId, unreadCount } });
-    }, [dispatch])
+        await userChatsMutate(userChats.map((item: IUserChat) =>
+            item?.latestMessage?.roomId == roomId
+                ? {
+                    unreadCount,
+                    latestMessage: { ...item.latestMessage }
+                }
+                : item
+        ), false);
+    }, [dispatch, userChats])
 
     return {
         handleIncomingMessage,
