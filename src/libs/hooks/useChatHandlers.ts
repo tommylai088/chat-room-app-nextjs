@@ -23,23 +23,32 @@ const useChatHandlers = ({
     const { joinRoom } = useJoinRoom();
 
     // Updates the message list for the selected user
-    const handleUpdateMessages = useCallback((receiverId: string, senderId: string, message: IMessage) => {
+    const handleUpdateMessages = useCallback(async (receiverId: string, senderId: string, message: IMessage) => {
         // Selected user sent message to me or I sent message to selected user
         if (receiverId == selectedUserId || senderId == selectedUserId) {
-            mutate([...(messages || []), message], false);
+            await mutate([...(messages || []), message], false);
         }
     }, [selectedUserId, messages, mutate])
 
     // Updates the user chats list with the latest message
-    const handleUpdateUserChats = useCallback((message: IMessage) => {
-        userChatsMutate(userChats.map((item: IUserChat) =>
-            item?.latestMessage?.roomId == message.roomId
-                ? {
-                    ...item,
-                    latestMessage: { ...message }
-                }
-                : item
-        ), false)
+    const handleUpdateUserChats = useCallback(async (message: IMessage) => {
+        let newList: IUserChat[];
+        if (!userChats.find(item => item.latestMessage.roomId == message.roomId)) {
+            newList = [...userChats, {
+                latestMessage: { ...message },
+                unreadCount: 1
+            }];
+        } else {
+            newList = userChats.map((item: IUserChat) =>
+                item?.latestMessage?.roomId == message.roomId
+                    ? {
+                        ...item,
+                        latestMessage: { ...message }
+                    }
+                    : item
+            )
+        }
+        await userChatsMutate(newList, false);
     }, [userChats, userChatsMutate])
 
     // Marks a message as read
@@ -57,30 +66,32 @@ const useChatHandlers = ({
             let unreadCount = 0;
             if (selectedUserId != senderId) {
                 // Increment the unread count for the receiver
-                unreadCount = unreadCounts[message.roomId] + 1;
+                unreadCount = (unreadCounts[message.roomId] || 0) + 1;
+                dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId: message.roomId, unreadCount } });
             } else {
                 handleMarkAsRead(senderId, receiverId);
+                dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId: message.roomId, unreadCount: 0 } });
             }
-            dispatch({ type: 'SET_MESSAGE_COUNT', payload: { roomId: message.roomId, unreadCount } });
         }
     }, [currentUserId, selectedUserId, handleMarkAsRead, dispatch, unreadCounts])
 
-    const handleIncomingMessage = useCallback((message: IMessage) => {
+    const handleIncomingMessage = useCallback(async (message: IMessage) => {
         console.log('Received message:', message);
         const receiverId = message?.receiver?.id;
         const senderId = message?.sender?.id;
+
         // Update existing messages
-        handleUpdateMessages(receiverId, senderId, message)
-        // Update existing user chats
-        handleUpdateUserChats(message)
+        await handleUpdateMessages(receiverId, senderId, message)
+        // // Update existing user chats
+        await handleUpdateUserChats(message)
         // Update unread counts
         handleUpdateUnreadCount(receiverId, senderId, message);
-    }, [handleUpdateMessages, handleUpdateUserChats, handleUpdateUnreadCount]);
+    }, [handleUpdateUnreadCount]);
 
-    const handleRoomNotification = useCallback((message: IMessage) => {
+    const handleRoomNotification = useCallback(async (message: IMessage) => {
         console.log(`New notification from ${message.receiver} in room ${message.roomId}: ${message.message}`);
         joinRoom(message.roomId);
-        handleIncomingMessage(message);
+        await handleIncomingMessage(message);
     }, [handleIncomingMessage, joinRoom])
 
     const handleUserTyping = useCallback(({ senderId, isTyping }: ITypingRes) => {
