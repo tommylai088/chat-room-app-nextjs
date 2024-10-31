@@ -120,7 +120,7 @@ const useChatHandlers = ({
                 }
                 : item
         ), false);
-    }, [dispatch, userChats, userChatsMutate, dispatch])
+    }, [userChats, userChatsMutate])
 
     return {
         handleIncomingMessage,
