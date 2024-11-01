@@ -13,7 +13,7 @@ function AuthContainer() {
             }}
             flexDirection="column"
             h={{
-                base: '100vh',
+                base: '100dvh',
                 md: 'unset'
             }}
             alignItems="center"

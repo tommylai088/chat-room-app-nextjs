@@ -41,7 +41,7 @@ function ChatContainer() {
             background="white"
             w="100%"
             h={{
-                base: '100vh',
+                base: '100dvh',
                 md: '700px'
             }}
             pos="relative"

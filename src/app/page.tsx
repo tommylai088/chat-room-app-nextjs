@@ -9,7 +9,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <Center maxW="1280px" margin="0 auto" h='100vh'>
+      <Center maxW="1280px" margin="0 auto" h='100dvh'>
         <Spinner color="orange.500" size="lg" />
       </Center>
     );
@@ -21,7 +21,7 @@ export default function App() {
       md: '1280px'
     }}
       margin="0 auto"
-      h='100vh'
+      h='100dvh'
       display={{
         base: 'unset',
         md: 'flex'
