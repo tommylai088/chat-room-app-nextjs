@@ -1,20 +1,23 @@
 'use client';
 import LoadingBoxOverlay from "@/components/features/common/LoadingBoxOverlay";
 import { ILogin } from "@/libs/interfaces";
-import { Box, Button, FormControl, FormErrorMessage, Input, Text } from "@chakra-ui/react";
+import { Button, FormControl, FormErrorMessage, Input, Text } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 function SigninForm() {
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const methods = useForm<ILogin>();
     const {
         handleSubmit,
         register,
         formState: { errors },
         setError,
         clearErrors
-    } = useForm<ILogin>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    } = methods
+
 
     const onSubmit = (values: ILogin) => {
         clearErrors();
@@ -37,7 +40,7 @@ function SigninForm() {
     }
 
     return (
-        <Box>
+        <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormControl mt={4} isInvalid={Boolean(errors?.username)}>
                     <Input
@@ -72,7 +75,7 @@ function SigninForm() {
                 </Button>
             </form>
             <LoadingBoxOverlay loading={isLoading} />
-        </Box>
+        </FormProvider>
     )
 }
 

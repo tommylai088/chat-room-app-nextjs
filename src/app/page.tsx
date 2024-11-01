@@ -2,7 +2,7 @@
 import AuthContainer from "@/components/features/auth/AuthContainer";
 import ChatContainer from "@/components/features/chat/ChatContainer";
 import { useAuth } from "@/libs/hooks/useAuth";
-import { Center, Spinner } from "@chakra-ui/react";
+import { Box, Center, Spinner } from "@chakra-ui/react";
 
 export default function App() {
   const { isLoggedIn, isLoading } = useAuth();
@@ -10,20 +10,26 @@ export default function App() {
   if (isLoading) {
     return (
       <Center maxW="1280px" margin="0 auto" h='100vh'>
-        <Spinner color="orange.500" />
+        <Spinner color="orange.500" size="lg" />
       </Center>
     );
   }
 
   return (
-    <Center maxW={{
+    <Box maxW={{
       base: '600px',
       md: '1280px'
     }}
       margin="0 auto"
       h='100vh'
+      display={{
+        base: 'unset',
+        md: 'flex'
+      }}
+      justifyContent="center"
+      alignItems="center"
     >
       {isLoggedIn ? <ChatContainer /> : <AuthContainer />}
-    </Center>
+    </Box>
   );
 }

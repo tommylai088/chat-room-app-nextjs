@@ -17,7 +17,10 @@ function MessageHistory({ data, chatContainerRef, messagesEndRef }: IMessageHist
 
     return (
         <Box
-            height="580px"
+            h={{
+                base: 'calc(100vh - 60px - 64px)',
+                md: '580px'
+            }}
             overflow="auto"
             ref={chatContainerRef}
         >

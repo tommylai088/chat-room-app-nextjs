@@ -16,7 +16,7 @@ function UserSearchInput({ callback, searchValue, resetValue }: IUserSearchInput
     }
 
     return (
-        <Box w="350px" px="3" py="2" height="60px">
+        <Box w="100%" px="3" py="2" height="60px">
             <Flex alignItems="center">
                 <Input
                     placeholder="Search users"

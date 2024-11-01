@@ -15,7 +15,10 @@ function AuthTabs() {
         <Tabs
             index={tabIndex}
             onChange={(index) => handleTabsChange(index)}
-            w="500px"
+            w={{
+                base: '80%',
+                md: '500px'
+            }}
         >
             <TabList>
                 <Tab w="50%">Sign in</Tab>

@@ -22,8 +22,18 @@ function UserItem({ user }: IUserItemProps) {
             onClick={() => handleSelectUser()}
         >
             <Flex gap="10" justifyContent="center">
-                <Avatar name={user?.username} src={user?.avatar?.url} />
-                <Flex gap="5px" flexDirection="column" width="250px">
+                <Avatar
+                    name={user?.username}
+                    src={user?.avatar?.url}
+                />
+                <Flex
+                    gap="5px"
+                    flexDirection="column"
+                    w={{
+                        base: '100%',
+                        md: '250px'
+                    }}
+                >
                     <Flex justifyContent="space-between">
                         <Text
                             fontSize="14px"

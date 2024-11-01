@@ -40,7 +40,10 @@ function ChatContainer() {
             boxShadow="rgba(0, 0, 0, 0.35) 0px 5px 15px"
             background="white"
             w="100%"
-            h="700px"
+            h={{
+                base: '100vh',
+                md: '700px'
+            }}
             pos="relative"
         >
             <Flex

@@ -35,11 +35,21 @@ function Chat({ user, userChat, typingUsers, unreadCounts }: IChatProps) {
             onClick={() => handleSelectUser()}
         >
             <Flex gap="10" justifyContent="center">
-                <Avatar name={user?.username} src={user?.avatar?.url} />
+                <Avatar
+                    name={user?.username}
+                    src={user?.avatar?.url}
+                    mr={{
+                        base: 'unset',
+                        md: 'auto'
+                    }}
+                />
                 <Flex
                     gap="5px"
                     flexDirection="column"
-                    width="250px"
+                    w={{
+                        base: '100%',
+                        md: '250px'
+                    }}
                 >
                     <Flex
                         justifyContent="space-between"
@@ -76,8 +86,9 @@ function Chat({ user, userChat, typingUsers, unreadCounts }: IChatProps) {
                             <Text
                                 fontSize="14px"
                                 color="gray.800"
-                                maxW="150px"
-                                w="150px"
+                                maxW="120px"
+                                w="100%"
+                                minW="80px"
                                 overflow="hidden"
                                 noOfLines={2}
                             >

@@ -21,7 +21,10 @@ function ChatPanel({ userChats, isLoadingUserChats }: IChatPanelProps) {
             display="flex"
             flexDirection="column"
             alignItems="center"
-            w="350px"
+            w={{
+                base: 'calc(100% - 60px)',
+                md: '350px'
+            }}
         >
             <UserSearchInput
                 callback={(searchValue: string) => setSearchValue(searchValue)}
