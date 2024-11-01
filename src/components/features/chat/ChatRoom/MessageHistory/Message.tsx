@@ -2,6 +2,7 @@ import { useAuth } from "@/libs/hooks/useAuth";
 import { IMessage } from "@/libs/interfaces";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import { BiCheckDouble } from "react-icons/bi";
 
 interface IMessageProps {
     item: IMessage;
@@ -35,12 +36,14 @@ function Message({ item }: IMessageProps) {
                             {item.message}
                         </Text>
                     </Box>
-                    <Text
-                        textAlign={isSender ? 'right' : 'left'}
-                        fontSize="10px"
-                    >
-                        {creationTime}
-                    </Text>
+                    <Flex justifyContent={isSender ? 'flex-end' : 'flex-start'}>
+                        <Text
+                            fontSize="10px"
+                        >
+                            {creationTime}
+                        </Text>
+                        <BiCheckDouble color={item?.isRead ? 'orange' : 'gray'} fontSize="15px" />
+                    </Flex>
                 </Flex>
             </Flex>
         </Box>
