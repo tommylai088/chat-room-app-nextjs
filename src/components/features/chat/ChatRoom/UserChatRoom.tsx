@@ -66,9 +66,20 @@ function UserChatRoom({ selectedUser, messages }: IUserChatRoomProps) {
     return (
         <Box
             overflow="hidden"
-            maxW="880px"
-            minW="500px"
+            maxW={{
+                base: 'unset',
+                md: '869px'
+            }}
+            minW={{
+                base: 'unset',
+                md: '358px'
+            }}
             w="100%"
+            bg="white"
+            pos={{
+                base: 'absolute',
+                md: 'relative'
+            }}
         >
             {selectedUser && (
                 <>

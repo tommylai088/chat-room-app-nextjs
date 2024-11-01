@@ -41,6 +41,7 @@ function ChatContainer() {
             background="white"
             w="100%"
             h="700px"
+            pos="relative"
         >
             <Flex
                 h="100%"
@@ -51,6 +52,7 @@ function ChatContainer() {
                     isLoadingUserChats={isLoadingUserChats}
                 />
                 <Divider orientation='vertical' />
+                
                 <UserChatRoom
                     messages={messages}
                     key={selectedUser?.id}

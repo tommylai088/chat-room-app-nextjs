@@ -8,7 +8,7 @@ export interface IMessagesState {
 
 // Action type definitions
 export type Action =
-  | { type: 'SELECT_USER'; payload: IUser }
+  | { type: 'SELECT_USER'; payload?: IUser }
   | { type: 'SEARCH_USER'; payload: string }
   | { type: 'UPDATE_TYPING_USERS'; payload: ITypingRes }
   | { type: 'SET_MESSAGE_COUNTS'; payload: IUnreadCounts }

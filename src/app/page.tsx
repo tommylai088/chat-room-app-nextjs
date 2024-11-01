@@ -16,7 +16,13 @@ export default function App() {
   }
 
   return (
-    <Center maxW="1280px" margin="0 auto" h='100vh'>
+    <Center maxW={{
+      base: '600px',
+      md: '1280px'
+    }}
+      margin="0 auto"
+      h='100vh'
+    >
       {isLoggedIn ? <ChatContainer /> : <AuthContainer />}
     </Center>
   );
