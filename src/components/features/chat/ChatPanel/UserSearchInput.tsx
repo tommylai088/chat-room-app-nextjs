@@ -19,7 +19,7 @@ function UserSearchInput({ callback, searchValue, resetValue }: IUserSearchInput
         <Box w="100%" px="3" py="2" height="60px">
             <Flex alignItems="center">
                 <Input
-                    placeholder="Search users"
+                    placeholder="Search users e.g tommy"
                     borderRadius="15px"
                     onChange={(e) => onChange(e)}
                     value={searchValue}
