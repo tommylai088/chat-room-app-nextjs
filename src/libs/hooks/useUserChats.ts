@@ -7,6 +7,7 @@ export const useUserChats = () => {
     const { data, loading, error, mutate } = useFetcherGet(`/messages/userChats`);
     const { dispatch } = useMessagesContext();
     const userChats: IUserChat[] = useMemo(() => [...data], [data])
+    userChats.sort((a, b) => new Date(b.latestMessage.createdAt).getTime() - new Date(a.latestMessage.createdAt).getTime());
 
     useEffect(() => {
         if (userChats?.length > 0) {

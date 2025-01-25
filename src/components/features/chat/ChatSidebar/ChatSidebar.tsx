@@ -6,7 +6,6 @@ import {
 } from '@chakra-ui/react';
 import { signOut } from 'next-auth/react';
 import { HiOutlineChat, HiOutlineLogout } from "react-icons/hi";
-import { RiSettings2Line } from "react-icons/ri";
 
 function ChatSidebar() {
 
@@ -32,7 +31,7 @@ function ChatSidebar() {
                     borderBottom="solid 1px #E0E0E0"
                     color="white"
                 />
-                <IconButton
+                {/* <IconButton
                     w="60px"
                     height="60px"
                     borderRadius="unset"
@@ -42,7 +41,7 @@ function ChatSidebar() {
                     icon={<RiSettings2Line />}
                     borderBottom="solid 1px #E0E0E0"
                     color="white"
-                />
+                /> */}
                 <IconButton
                     w="60px"
                     height="60px"
