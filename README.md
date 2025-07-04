@@ -33,10 +33,10 @@ This is a simple chat room application built with Next.js, showcasing real-time 
 
 3. Configure environment variables:
    - Create a `.env.local` file in the root:
-     ```
+    ```
     NEXT_PUBLIC_API_HOST=your_server_url
     NEXTAUTH_SECRET="your_jwt_secret"
-     ```
+    ```
 
 4. Run in development:
    ```bash
