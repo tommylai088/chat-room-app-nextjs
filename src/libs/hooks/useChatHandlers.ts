@@ -28,7 +28,7 @@ const useChatHandlers = ({
         if (receiverId == selectedUserId || senderId == selectedUserId) {
             appendMessage(message)
         }
-    }, [selectedUserId, messages, appendMessage])
+    }, [selectedUserId, appendMessage])
 
     // Marks a message as read
     const handleMarkAsRead = useCallback((senderId: string, receiverId: string) => {
