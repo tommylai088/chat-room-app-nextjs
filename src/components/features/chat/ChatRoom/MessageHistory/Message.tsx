@@ -42,7 +42,9 @@ function Message({ item }: IMessageProps) {
                         >
                             {creationTime}
                         </Text>
-                        <BiCheckDouble color={item?.isRead ? 'orange' : 'gray'} fontSize="15px" />
+                        {isSender &&
+                            <BiCheckDouble color={item?.isRead ? 'orange' : 'gray'} fontSize="15px" />
+                        }
                     </Flex>
                 </Flex>
             </Flex>

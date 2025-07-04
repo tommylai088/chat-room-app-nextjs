@@ -18,7 +18,7 @@ const useChatHandlers = ({
     unreadCounts
 }: IUseChatHandlersParams) => {
     const { dispatch } = useMessagesContext();
-    const { mutate, messages } = useMessages(selectedUserId);
+    const { messages, appendMessage } = useMessages(selectedUserId);
     const { userChats, mutate: userChatsMutate } = useUserChats();
     const { joinRoom } = useJoinRoom();
 
@@ -26,9 +26,9 @@ const useChatHandlers = ({
     const handleUpdateMessages = useCallback(async (receiverId: string, senderId: string, message: IMessage) => {
         // Selected user sent message to me or I sent message to selected user
         if (receiverId == selectedUserId || senderId == selectedUserId) {
-            await mutate([...(messages || []), message], false);
+            appendMessage(message)
         }
-    }, [selectedUserId, messages, mutate])
+    }, [selectedUserId, messages, appendMessage])
 
     // Marks a message as read
     const handleMarkAsRead = useCallback((senderId: string, receiverId: string) => {
@@ -79,7 +79,7 @@ const useChatHandlers = ({
     );
 
     const handleIncomingMessage = useCallback(async (message: IMessage) => {
-        console.log('Received message:', message);
+        // console.log('Received message:', message);
         const receiverId = message?.receiver?.id;
         const senderId = message?.sender?.id;
 
@@ -93,7 +93,7 @@ const useChatHandlers = ({
     }, [handleUpdateMessages, handleUpdateUserChats, calculateUnreadCount]);
 
     const handleRoomNotification = useCallback(async (message: IMessage) => {
-        console.log(`New notification from ${message.receiver} in room ${message.roomId}: ${message.message}`);
+        // console.log(`New notification from ${message.receiver} in room ${message.roomId}: ${message.message}`);
         joinRoom(message.roomId);
         await handleIncomingMessage(message);
     }, [handleIncomingMessage, joinRoom])
@@ -108,10 +108,10 @@ const useChatHandlers = ({
     }, [dispatch]);
 
     const handleUnreadCountUpdated = useCallback(async ({ roomId, unreadCount }: IMarkMessageAsReadRes) => {
-        console.log('Unread count has updated:', {
-            roomId,
-            unreadCount
-        });
+        // console.log('Unread count has updated:', {
+        //     roomId,
+        //     unreadCount
+        // });
         await userChatsMutate(userChats.map((item: IUserChat) =>
             item?.latestMessage?.roomId == roomId
                 ? {

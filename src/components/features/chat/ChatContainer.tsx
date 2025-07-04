@@ -4,7 +4,6 @@ import { useMessagesContext } from "@/contexts/messages/MessagesContext";
 import { useAuth } from "@/libs/hooks/useAuth";
 import useChatHandlers from "@/libs/hooks/useChatHandlers";
 import { useListenSocketEvents } from "@/libs/hooks/useListenSocketEvents";
-import { useMessages } from "@/libs/hooks/useMessages";
 import { useSocket } from "@/libs/hooks/useSocket";
 import { useUserChats } from "@/libs/hooks/useUserChats";
 import { Box, Divider, Flex } from "@chakra-ui/react";
@@ -19,7 +18,6 @@ function ChatContainer() {
     const selectedUser = state?.selectedUser;
     const selectedUserId = selectedUser?.id
     useSocket(currentUserId);
-    const { messages } = useMessages(selectedUserId)
     const { userChats, loading: isLoadingUserChats } = useUserChats();
     const { handleIncomingMessage, handleUnreadCountUpdated, handleRoomNotification, handleUserTyping } = useChatHandlers(
         {
@@ -55,9 +53,8 @@ function ChatContainer() {
                     isLoadingUserChats={isLoadingUserChats}
                 />
                 <Divider orientation='vertical' />
-                
+
                 <UserChatRoom
-                    messages={messages}
                     key={selectedUser?.id}
                     selectedUser={selectedUser}
                 />
