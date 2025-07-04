@@ -57,12 +57,12 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore }: IMessageHist
             ref={containerRef}
             onScroll={handleScroll}
         >
-            {isLoadingMore &&
+            {!firstLoadRef.current && isLoadingMore &&
                 <Flex justifyContent="center" p="1">
                     <Spinner color="orange.500" size="md" />
                 </Flex>
             }
-            {!hasMore && <Text
+            {!firstLoadRef.current && !hasMore && <Text
                 margin="0 auto"
                 textAlign="center"
                 fontSize="14px"
