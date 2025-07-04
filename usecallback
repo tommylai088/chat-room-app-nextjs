@@ -1,2 +1,0 @@
-However, if this function were passed as a prop to another component or used in a hook dependency, keeping its reference stable with useCallback would be beneficial.
-
