@@ -18,7 +18,7 @@ const useChatHandlers = ({
     unreadCounts
 }: IUseChatHandlersParams) => {
     const { dispatch } = useMessagesContext();
-    const { messages, appendMessage } = useMessages(selectedUserId);
+    const { appendMessage } = useMessages(selectedUserId);
     const { userChats, mutate: userChatsMutate } = useUserChats();
     const { joinRoom } = useJoinRoom();
 
