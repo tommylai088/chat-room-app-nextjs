@@ -14,7 +14,7 @@ export function useMessages(receiverId?: string) {
 
     // Previous page
     if (!previousPage) {
-      return `/messages?nextCursor=${receiverId}`
+      return `/messages?receiverId=${receiverId}`
     }
   
     if (!previousPage.nextCursor) {

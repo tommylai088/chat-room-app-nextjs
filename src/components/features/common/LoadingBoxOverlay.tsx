@@ -8,7 +8,7 @@ function LoadingBoxOverlay({ loading }: ILoadingBoxOverlayProps) {
     return (
         <>
             {loading &&
-                <Box pos="absolute" inset="0">
+                <Box pos="absolute" inset="0" zIndex={9999}>
                     <Center h="full">
                         <Flex
                             bg="white"
