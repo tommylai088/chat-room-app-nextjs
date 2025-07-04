@@ -20,7 +20,7 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore }: IMessageHist
     const prevHeightRef = useRef<number | null>(null);
     const firstLoadRef = useRef(true);
 
- useLayoutEffect(() => {
+    useLayoutEffect(() => {
         const el = containerRef.current;
         if (!el) return;
         if (firstLoadRef.current && data.length > 0) {
