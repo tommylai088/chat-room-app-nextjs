@@ -7,7 +7,7 @@ export const useSocket = (userId?: string) => {
         if (!userId) return;
 
         socket?.emit(SocketEvent.Register, userId);
-        console.log(`Registered user: ${userId}`);
+        // console.log(`Registered user: ${userId}`);
 
         return () => {
             socket?.off(SocketEvent.Register);

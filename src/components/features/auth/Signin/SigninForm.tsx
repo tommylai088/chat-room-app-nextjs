@@ -29,7 +29,6 @@ function SigninForm() {
         }).then(response => {
             setIsLoading(false)
             if (response?.status === 200) {
-                console.log(response)
                 window.location.reload()
             } else {
                 setError("root.signinError", {
