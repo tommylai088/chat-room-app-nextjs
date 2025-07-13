@@ -18,6 +18,7 @@ function UserChatRoom({ selectedUser }: IUserChatRoomProps) {
     const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
     const currentUserId = session?.user?.userId;
     const prevMessagesLengthRef = useRef(0);
+    const lastMessageRef = useRef<string>('');
 
     const { handleMarkAsRead } = useMarkAsRead({
         senderId: selectedUser?.id,
@@ -35,21 +36,28 @@ function UserChatRoom({ selectedUser }: IUserChatRoomProps) {
     useEffect(() => {
         setShouldScrollToBottom(false);
         prevMessagesLengthRef.current = 0;
+        lastMessageRef.current = '';
     }, [selectedUser?.id]);
 
-    // Track when new messages are added
+    // Track when new messages are added (backup for server confirmation)
     useEffect(() => {
         if (messages.length > 0) {
             const hasNewMessages = messages.length > prevMessagesLengthRef.current;
+            const lastMessage = messages[messages.length - 1];
+            const lastMessageId = lastMessage?.id || '';
             
-            if (hasNewMessages) {
-                const lastMessage = messages[messages.length - 1];
+            // Check if this is a truly new message (not just re-render)
+            const isNewMessage = lastMessageId !== lastMessageRef.current;
+            
+            if (hasNewMessages && isNewMessage) {
                 const isOwnMessage = lastMessage?.sender?.id === currentUserId;
                 
-                // Set scroll trigger if it's our own message
+                // BACKUP: Scroll for own messages from server (in case optimistic scroll failed)
                 if (isOwnMessage) {
                     setShouldScrollToBottom(true);
                 }
+                
+                lastMessageRef.current = lastMessageId;
             }
             
             prevMessagesLengthRef.current = messages.length;
@@ -59,10 +67,9 @@ function UserChatRoom({ selectedUser }: IUserChatRoomProps) {
     // Reset scroll trigger after it's been used
     useEffect(() => {
         if (shouldScrollToBottom) {
-            // Reset after a short delay to allow the scroll to happen
             const timer = setTimeout(() => {
                 setShouldScrollToBottom(false);
-            }, 100);
+            }, 2000);
             return () => clearTimeout(timer);
         }
     }, [shouldScrollToBottom]);
@@ -99,7 +106,9 @@ function UserChatRoom({ selectedUser }: IUserChatRoomProps) {
                     />
                     <MessageInput 
                         selectedUser={selectedUser} 
-                        onMessageSent={() => setShouldScrollToBottom(true)}
+                        onMessageSent={() => {
+                            setShouldScrollToBottom(true);
+                        }}
                     />
                 </>
             )}

@@ -26,8 +26,16 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore, shouldScrollTo
     const isNearBottom = () => {
         const el = containerRef.current;
         if (!el) return false;
-        const threshold = 100; // pixels from bottom
+        const threshold = 150;
         return el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+    };
+
+    // Simple scroll to bottom function
+    const scrollToBottom = () => {
+        const el = containerRef.current;
+        if (!el) return;
+        
+        el.scrollTop = el.scrollHeight;
     };
 
     // Scroll to bottom on first load
@@ -35,32 +43,29 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore, shouldScrollTo
         const el = containerRef.current;
         if (!el) return;
         if (firstLoadRef.current && data.length > 0) {
-            el.scrollTop = el.scrollHeight;
+            scrollToBottom();
             firstLoadRef.current = false;
             prevDataLengthRef.current = data.length;
         }
     }, [data.length]);
 
-    // Scroll to bottom when new messages are added (not when loading older messages)
+    // Scroll to bottom when new messages are added
     useEffect(() => {
         const el = containerRef.current;
         if (!el || firstLoadRef.current) return;
         
-        // Only scroll if we have more messages than before (new messages added)
         const hasNewMessages = data.length > prevDataLengthRef.current;
         
         if (shouldScrollToBottom && hasNewMessages) {
-            // Check if the last message is from the current user
             const lastMessage = data[data.length - 1];
             const isOwnMessage = lastMessage?.sender?.id === currentUserId;
             
-            // Scroll to bottom if it's our own message or if we're already near bottom
+            // Always scroll for own messages, or if near bottom for others
             if (isOwnMessage || isNearBottom()) {
-                el.scrollTop = el.scrollHeight;
+                scrollToBottom();
             }
         }
         
-        // Update the previous data length
         prevDataLengthRef.current = data.length;
     }, [data.length, shouldScrollToBottom, currentUserId, data]);
 
@@ -91,6 +96,10 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore, shouldScrollTo
             overflow="auto"
             ref={containerRef}
             onScroll={handleScroll}
+            css={{
+                scrollBehavior: 'smooth',
+                '-webkit-overflow-scrolling': 'touch'
+            }}
         >
             {!firstLoadRef.current && isLoadingMore &&
                 <Flex justifyContent="center" p="1">
@@ -112,7 +121,6 @@ function MessageHistory({ data, isLoadingMore, loadMore, hasMore, shouldScrollTo
 
                 return (
                     <Box key={item?.id} data-id={item?.id}>
-                        {/* Display the date separator if it's the first message of the day */}
                         {(index === 0 || currentDate !== previousDate) && (
                             <Box
                                 p="2"

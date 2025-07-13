@@ -13,6 +13,7 @@ interface IMessageInputProps {
 
 function MessageInput({ selectedUser, onMessageSent }: IMessageInputProps) {
     const [messageText, setMessageText] = useState<string>('');
+    const [isSending, setIsSending] = useState(false);
     const { session } = useAuth();
     const { startTyping, stopTyping } = useTyping({
         senderId: session?.user?.userId,
@@ -41,13 +42,23 @@ function MessageInput({ selectedUser, onMessageSent }: IMessageInputProps) {
     }, []);
 
     const handleSendMessage = useCallback(() => {
-        if (messageText.trim()) {
+        if (messageText.trim() && !isSending) {
+            setIsSending(true);
+            
+            // Scroll to bottom immediately when user sends message
+            onMessageSent?.();
+            
+            // Send message to server
             sendMessage(messageText);
             setMessageText('');
             stopTyping();
-            onMessageSent?.(); // Call the callback when message is sent
+            
+            // Reset sending state after a delay
+            setTimeout(() => {
+                setIsSending(false);
+            }, 1000);
         }
-    }, [messageText, sendMessage, stopTyping, onMessageSent]);
+    }, [messageText, sendMessage, stopTyping, isSending, onMessageSent]);
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
@@ -64,9 +75,10 @@ function MessageInput({ selectedUser, onMessageSent }: IMessageInputProps) {
                 onKeyDown={onKeyDown}
                 onChange={handleMessageChange}
                 placeholder="Type your message..."
+                isDisabled={isSending}
             />
             <IconButton
-                isDisabled={!messageText}
+                isDisabled={!messageText || isSending}
                 aria-label="Send Message"
                 onClick={handleSendMessage}
                 icon={<FiSend />}
