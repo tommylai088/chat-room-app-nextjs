@@ -3,7 +3,7 @@ import { useMessagesContext } from "@/contexts/messages/MessagesContext";
 import { ITypingUsers, IUnreadCounts, IUser, IUserChat } from "@/libs/interfaces";
 import { Avatar, Flex, ListItem, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { memo, useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import UnreadBadge from "./UnreadBadge";
 
 interface IChatProps {
@@ -12,22 +12,16 @@ interface IChatProps {
     typingUsers: ITypingUsers;
     unreadCounts: IUnreadCounts;
 }
-
-const Chat = memo(function Chat({ user, userChat, typingUsers, unreadCounts }: IChatProps) {
+function Chat({ user, userChat, typingUsers, unreadCounts }: IChatProps) {
+    const creationTime = userChat?.latestMessage?.createdAt ? dayjs(userChat?.latestMessage?.createdAt).format('HH:mm') : '';
     const { dispatch } = useMessagesContext();
-
-    // Memoize expensive calculations
-    const creationTime = useMemo(() => 
-        userChat?.latestMessage?.createdAt ? dayjs(userChat?.latestMessage?.createdAt).format('HH:mm') : '', 
-        [userChat?.latestMessage?.createdAt]
-    );
 
     const handleSelectUser = useCallback(() => {
         dispatch({ type: 'SELECT_USER', payload: user });
-    }, [dispatch, user]);
+    }, [dispatch, user])
 
-    const isUserTyping = useCallback((userId: string) => typingUsers[userId], [typingUsers]);
-    const unreadCount = useCallback((roomId: string) => unreadCounts[roomId], [unreadCounts]);
+    const isUserTyping = (userId: string) => typingUsers[userId];
+    const unreadCount = (roomId: string) => unreadCounts[roomId];
 
     return (
         <ListItem
@@ -107,6 +101,5 @@ const Chat = memo(function Chat({ user, userChat, typingUsers, unreadCounts }: I
             </Flex>
         </ListItem >
     )
-});
-
+}
 export default Chat;

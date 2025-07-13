@@ -1,11 +1,10 @@
 import { Badge, Text } from "@chakra-ui/react";
-import { memo } from "react";
-
 interface IUnreadBadgeProps {
     count: number
 }
 
-const UnreadBadge = memo(function UnreadBadge({ count }: IUnreadBadgeProps) {
+function UnreadBadge({ count }: IUnreadBadgeProps) {
+
     return (
         <Badge
             display="flex"
@@ -22,6 +21,6 @@ const UnreadBadge = memo(function UnreadBadge({ count }: IUnreadBadgeProps) {
             </Text>
         </Badge>
     )
-});
+}
 
 export default UnreadBadge;

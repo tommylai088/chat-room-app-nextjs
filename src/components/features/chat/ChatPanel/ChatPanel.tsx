@@ -2,7 +2,7 @@
 import { useUsers } from "@/libs/hooks/useUsers";
 import { IUserChat } from "@/libs/interfaces";
 import { Box, Divider } from "@chakra-ui/react";
-import { memo, useState } from "react";
+import { useState } from "react";
 import ChatList from "./ChatList/ChatList";
 import UserList from "./UserList";
 import UserSearchInput from "./UserSearchInput";
@@ -12,7 +12,7 @@ interface IChatPanelProps {
     isLoadingUserChats: boolean;
 }
 
-const ChatPanel = memo(function ChatPanel({ userChats, isLoadingUserChats }: IChatPanelProps) {
+function ChatPanel({ userChats, isLoadingUserChats }: IChatPanelProps) {
     const [searchValue, setSearchValue] = useState<string>('');
     const { users, loading: isLoadingUsers } = useUsers(searchValue);
 
@@ -44,6 +44,6 @@ const ChatPanel = memo(function ChatPanel({ userChats, isLoadingUserChats }: ICh
             }
         </Box>
     );
-});
+}
 
 export default ChatPanel;

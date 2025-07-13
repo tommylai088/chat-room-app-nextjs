@@ -7,11 +7,10 @@ import { useListenSocketEvents } from "@/libs/hooks/useListenSocketEvents";
 import { useSocket } from "@/libs/hooks/useSocket";
 import { useUserChats } from "@/libs/hooks/useUserChats";
 import { Box, Divider, Flex } from "@chakra-ui/react";
-import { memo } from "react";
 import ChatPanel from "./ChatPanel/ChatPanel";
 import UserChatRoom from "./ChatRoom/UserChatRoom";
 
-const ChatContainer = memo(function ChatContainer() {
+function ChatContainer() {
     const { session } = useAuth();
     const { state } = useMessagesContext();
     const { unreadCounts } = state;
@@ -62,6 +61,6 @@ const ChatContainer = memo(function ChatContainer() {
             </Flex>
         </Box >
     );
-});
+}
 
 export default ChatContainer;
