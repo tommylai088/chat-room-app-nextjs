@@ -8,9 +8,10 @@ import { FiSend } from "react-icons/fi";
 
 interface IMessageInputProps {
     selectedUser: IUser;
+    onMessageSent?: () => void;
 }
 
-function MessageInput({ selectedUser }: IMessageInputProps) {
+function MessageInput({ selectedUser, onMessageSent }: IMessageInputProps) {
     const [messageText, setMessageText] = useState<string>('');
     const { session } = useAuth();
     const { startTyping, stopTyping } = useTyping({
@@ -44,8 +45,9 @@ function MessageInput({ selectedUser }: IMessageInputProps) {
             sendMessage(messageText);
             setMessageText('');
             stopTyping();
+            onMessageSent?.(); // Call the callback when message is sent
         }
-    }, [messageText, sendMessage, stopTyping]);
+    }, [messageText, sendMessage, stopTyping, onMessageSent]);
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {

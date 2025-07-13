@@ -9,7 +9,7 @@ interface IUseSendMessageParams {
 export const useSendMessage = ({ senderId, receiverId }: IUseSendMessageParams) => {
 
     const sendMessage = useCallback((message: string) => {
-        if (!senderId || !senderId) return;
+        if (!senderId || !receiverId) return;
         socket?.emit(SocketEvent.SendMessage, {
             senderId,
             receiverId,
